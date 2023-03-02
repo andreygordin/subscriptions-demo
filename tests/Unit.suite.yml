@@ -1,0 +1,6 @@
+actor: UnitTester
+bootstrap: ../bootstrap.php
+modules:
+  enabled:
+    - Asserts
+  step_decorators: ~

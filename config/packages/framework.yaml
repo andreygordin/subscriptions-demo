@@ -1,0 +1,14 @@
+framework:
+  secret: '%env(APP_SECRET)%'
+
+  serializer:
+    default_context:
+      disable_type_enforcement: true
+
+  session:
+    cookie_samesite: lax
+    cookie_secure: auto
+    handler_id: null
+
+  php_errors:
+    log: true

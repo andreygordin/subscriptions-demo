@@ -1,0 +1,16 @@
+actor: IntegrationTester
+bootstrap: ../bootstrap.php
+modules:
+  enabled:
+    - Asserts
+    - Db:
+        dsn: 'mysql:host=%DATABASE_HOST%;port=%DATABASE_PORT%;dbname=%DATABASE_NAME%'
+        user: '%DATABASE_USER%'
+        password: '%DATABASE_PASSWORD%'
+        dump: tests/Support/Data/dump.sql
+        cleanup: true
+        populate: true
+    - Symfony:
+        app_path: 'src'
+        environment: 'test'
+  step_decorators: ~

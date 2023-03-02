@@ -1,0 +1,89 @@
+parameters:
+  container.dumper.inline_factories: true
+services:
+  _defaults:
+    autoconfigure: true
+    autowire: true
+
+  App\:
+    resource: '../src/*'
+    exclude: '../src/{Entity,Migration,Kernel.php}'
+
+  App\Controller\:
+    resource: '../src/Controller/'
+    tags: ['controller.service_arguments']
+
+  App\EventListener\ExceptionListener:
+    tags:
+      - { name: kernel.event_listener, event: kernel.exception }
+
+  App\Messenger\Handler\ChannelHandler:
+    class: App\Messenger\Handler\ChannelHandler
+    arguments:
+      $denormalizer: '@app.serializer.normalizer.camel_case_to_snake_case'
+
+  App\Messenger\Handler\ManualSubscriptionHandler:
+    class: App\Messenger\Handler\ManualSubscriptionHandler
+    arguments:
+      $denormalizer: '@app.serializer.normalizer.camel_case_to_snake_case'
+
+  App\Messenger\Handler\OfferHandler:
+    class: App\Messenger\Handler\OfferHandler
+    arguments:
+      $denormalizer: '@app.serializer.normalizer.camel_case_to_snake_case'
+
+  App\Messenger\Handler\UserHandler:
+    class: App\Messenger\Handler\UserHandler
+    arguments:
+      $denormalizer: '@app.serializer.normalizer.camel_case_to_snake_case'
+
+  app.serializer.normalizer.camel_case_to_snake_case:
+    class: Symfony\Component\Serializer\Normalizer\ObjectNormalizer
+    arguments:
+      - '@serializer.mapping.class_metadata_factory'
+      - '@serializer.name_converter.camel_case_to_snake_case'
+      - '@serializer.property_accessor'
+      - '@?property_info'
+      - '@?serializer.mapping.class_discriminator_resolver'
+      - ~
+    tags:
+      - { name: serializer.normalizer, priority: -1100 }
+
+  Acme\Messenger\MessageFactory:
+    class: Acme\Messenger\MessageFactory
+
+  Acme\Messenger\JsonSerializer:
+    class: Acme\Messenger\JsonSerializer
+    arguments: [ '@Acme\Messenger\MessageFactory' ]
+
+  Doctrine\DBAL\Connection:
+    class: Doctrine\DBAL\Connection
+    factory:
+      - Doctrine\DBAL\DriverManager
+      - getConnection
+    arguments:
+      - '%db%'
+
+  Doctrine\ORM\EntityRepository $channelRepository:
+    class: Doctrine\ORM\EntityRepository
+    factory: [ '@doctrine.orm.entity_manager', getRepository ]
+    arguments:
+      - App\Entity\Channel
+
+  Doctrine\ORM\EntityRepository $manualSubscriptionRepository:
+    class: Doctrine\ORM\EntityRepository
+    factory: [ '@doctrine.orm.entity_manager', getRepository ]
+    arguments:
+      - App\Entity\ManualSubscription
+
+  Doctrine\ORM\EntityRepository $offerRepository:
+    class: Doctrine\ORM\EntityRepository
+    factory: [ '@doctrine.orm.entity_manager', getRepository ]
+    arguments:
+      - App\Entity\Offer
+
+  Doctrine\ORM\EntityRepository $userRepository:
+    class: Doctrine\ORM\EntityRepository
+    factory: [ '@doctrine.orm.entity_manager', getRepository ]
+    arguments:
+      - App\Entity\User

@@ -1,0 +1,25 @@
+framework:
+  messenger:
+    failure_transport: failed
+
+    routing:
+
+    serializer:
+      default_serializer: Acme\Messenger\JsonSerializer
+
+    transports:
+      async:
+        dsn: '%env(MESSENGER_TRANSPORT_DSN)%'
+        retry_strategy:
+          max_retries: 0
+        serializer: Acme\Messenger\JsonSerializer
+      delayed:
+        dsn: '%env(MESSENGER_TRANSPORT_DSN_DELAYED)%'
+        retry_strategy:
+          max_retries: 0
+        serializer: Acme\Messenger\JsonSerializer
+      failed:
+        dsn: '%env(MESSENGER_TRANSPORT_DSN_FAILED)%'
+        retry_strategy:
+          delay: 10000
+        serializer: Acme\Messenger\JsonSerializer

@@ -1,0 +1,18 @@
+actor: FunctionalTester
+bootstrap: ../bootstrap.php
+modules:
+  enabled:
+    - Db:
+        dsn: 'mysql:host=%DATABASE_HOST%;port=%DATABASE_PORT%;dbname=%DATABASE_NAME%'
+        user: '%DATABASE_USER%'
+        password: '%DATABASE_PASSWORD%'
+        dump: tests/Support/Data/dump.sql
+        cleanup: true
+        populate: true
+    - REST:
+        url: /
+        depends: Symfony
+    - Symfony:
+        app_path: 'src'
+        environment: 'test'
+  step_decorators: ~

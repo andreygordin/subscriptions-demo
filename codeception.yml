@@ -1,0 +1,23 @@
+actor_suffix: Tester
+extensions:
+  enabled:
+    - Codeception\Extension\RunFailed
+coverage:
+  enabled: true
+  exclude:
+    - src/Migration/*
+  include:
+    - src/*
+  show_uncovered: true
+namespace: Test
+params:
+  - .env
+  - .env.test
+  - .env.local
+paths:
+  data: tests/Support/Data
+  envs: tests/_envs
+  output: tests/_output
+  support: tests/Support
+  tests: tests
+support_namespace: Support
